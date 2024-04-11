@@ -1,10 +1,28 @@
-import React from 'react'
+
+import axios from 'axios';
+import React, { useState } from 'react'
 import { useLocation } from 'react-router-dom';
 
 function Send() {
   const location = useLocation();
   const user = location.state;
-  console.log(user);
+  const [amount, setAmount] = useState(0);
+  const [error, setError] = useState("");
+  const [succ, setSucc] = useState("");
+  const clickHnadler = async()=>{
+    const AuthStr = 'Bearer '.concat(localStorage.getItem('jwt'));
+    try {
+      const response = await axios.post('http://localhost:3000/api/v1/account/transfer', {
+        to : user._id,
+        amount : parseInt(amount)
+      }, { headers: { Authorization: AuthStr } })
+      setError("")
+      setSucc(response.data.message);
+    } catch (error) {
+      setSucc("")
+      setError(error.response.data.msg);
+    }
+  }
   return (
     <div className="flex justify-center h-screen bg-gray-100">
         <div className="h-full flex flex-col justify-center">
@@ -34,9 +52,14 @@ function Send() {
                         className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm"
                         id="amount"
                         placeholder="Enter amount"
+                        onChange={(e)=>{
+                          setAmount(e.target.value)
+                        }}
                     />
                     </div>
-                    <button className="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white">
+                    <div className='text-center text-blue-400'>{succ}</div>
+                    <div className='text-center text-red-400'>{error}</div>
+                    <button className="justify-center rounded-md text-sm font-medium ring-offset-background transition-colors h-10 px-4 py-2 w-full bg-green-500 text-white" onClick={clickHnadler}>
                         Initiate Transfer
                     </button>
                 </div>
