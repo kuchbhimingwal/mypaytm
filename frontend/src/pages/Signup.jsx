@@ -8,13 +8,14 @@ function signup() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const clickHandler = async()=>{
+    localStorage.removeItem('jwt');
     try {
       const response = await axios.post('http://localhost:3000/api/v1/user/signin', {
         username: email,
         password: password
       })
+      localStorage.setItem('jwt',response.data.token);
       navigate("/dashboard")
-      console.log(response);
     } catch (error) {
       setErrors(error.response.data.message);
     }
