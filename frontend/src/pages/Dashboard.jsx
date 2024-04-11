@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
 function dashboard() {
+  const navigate = useNavigate();
   const [balance, setBalance] = useState("");
   const [userList, setUserList] = useState([]);
   const onChnageHandler = async(e)=>{
@@ -45,7 +46,9 @@ function dashboard() {
         <div className='flex justify-between p-4' key={user._id}>
           <div className='font-bold'>{user.firstname} {user.lastname}</div>
           <div>
-            <button className='rounded-md bg-black text-white p-2'>Send Money</button>
+            <button className='rounded-md bg-black text-white p-2' onClick={()=>{
+              navigate('/send', { state: user })
+            }}>Send Money</button>
           </div>
         </div>
       ))}
