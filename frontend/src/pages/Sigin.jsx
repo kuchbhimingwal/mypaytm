@@ -1,11 +1,14 @@
 import React, { useState } from 'react'
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+
 function sigin() {
+  const navigate = useNavigate()
   const [firstName, setFirstName] = useState("")
   const [lastName, setLastName] = useState("")
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
-
+  const [errors, setErrors] = useState("")
   const clickHandler = async()=>{
     try {
       const response = await axios.post('http://localhost:3000/api/v1/user/signup', {
@@ -14,9 +17,11 @@ function sigin() {
         lastname: lastName,
         password: password
       })
+      navigate("/dashboard")
       console.log(response);
     } catch (error) {
-      console.log(error);
+      setErrors(error.response.data.message);
+
     }
   }
   return (
@@ -43,6 +48,7 @@ function sigin() {
         <div>
           <button className='w-full bg-black text-white rounded-md p-2 my-2' onClick={clickHandler}>Sign Up</button>
         </div>
+        <div className='text-center text-red-400'>{errors}</div>
         <div className='text-center'>Already have a account? <span className='underline cursor-pointer'>Sign In</span></div>
       </div>
     </div>
